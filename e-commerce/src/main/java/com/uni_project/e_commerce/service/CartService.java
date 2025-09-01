@@ -5,7 +5,6 @@ import com.uni_project.e_commerce.repo.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.PublicKey;
 import java.util.List;
 
 @Service
@@ -29,5 +28,4 @@ public class CartService {
     public void clearCart(String username){
         cartRepository.deleteByUsername(username);
     }
-
 }
