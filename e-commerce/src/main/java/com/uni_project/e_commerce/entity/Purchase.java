@@ -9,15 +9,20 @@ import java.time.LocalDate;
 @Table(name = "purchases")
 @Data
 public class Purchase {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
-    private String productName;
-    private int quantity;
-    private LocalDate purchaseDate;
-    private String deliveryTime;
-    private String deliveryLocation;
-    private String message;
-}
 
+    private String username;
+
+    private String description; // replaces productName
+
+    private LocalDate purchaseDate;
+
+    private String deliveryTime;
+
+    private String deliveryLocation;
+
+    private double totalPrice; // new field for total price
+}
