@@ -1,5 +1,6 @@
 package com.uni_project.e_commerce.controller;
 
+import com.uni_project.e_commerce.dto.CartItemDTO;
 import com.uni_project.e_commerce.entity.CartItem;
 import com.uni_project.e_commerce.service.CartService;
 import com.uni_project.e_commerce.service.UserService;
@@ -22,10 +23,10 @@ public class CartController {
 
     // Get all cart items for logged-in user
     @GetMapping
-    public List<CartItem> getCart(@AuthenticationPrincipal OidcUser oidcUser) {
+    public List<CartItemDTO> getCart(@AuthenticationPrincipal OidcUser oidcUser) {
         String email = oidcUser.getEmail();
         String username = userService.getUsernameByEmail(email);
-        return cartService.getCart(username);
+        return cartService.getCart(username); // now returns CartItemDTO with price + image
     }
 
     // Add a cart item

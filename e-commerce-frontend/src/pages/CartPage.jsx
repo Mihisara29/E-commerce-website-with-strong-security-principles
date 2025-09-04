@@ -23,6 +23,8 @@ const CartPage = () => {
     0
   );
 
+  console.log(cart);
+
   return (
     <section className="h-100 gradient-custom">
       <div className="container py-5">
@@ -40,16 +42,24 @@ const CartPage = () => {
                       {/* Product image */}
                       <div className="col-lg-3 col-md-12 mb-3 mb-lg-0">
                         <img
-                          src={item.image || "https://via.placeholder.com/150"}
+                          src={item.imageUrl}
                           alt={item.productName}
                           className="img-fluid rounded"
+                          style={{
+                            height: "187px",
+                            objectFit: "cover",
+                          }}
                         />
                       </div>
 
                       {/* Product details */}
                       <div className="col-lg-5 col-md-6 mb-3 mb-lg-0">
-                        <p className="mb-1"><strong>{item.productName}</strong></p>
-                        {item.description && <p className="mb-2">{item.description}</p>}
+                        <p className="mb-1">
+                          <strong>{item.productName}</strong>
+                        </p>
+                        {item.description && (
+                          <p className="mb-2">{item.description}</p>
+                        )}
 
                         <button
                           type="button"
@@ -126,7 +136,9 @@ const CartPage = () => {
                   </li>
                   <li className="list-group-item d-flex justify-content-between px-0 mt-3">
                     <strong>Total</strong>
-                    <span><strong>LKR {totalPrice}.00</strong></span>
+                    <span>
+                      <strong>LKR {totalPrice}.00</strong>
+                    </span>
                   </li>
                 </ul>
 

@@ -1,9 +1,12 @@
 package com.uni_project.e_commerce.service;
 
 import com.uni_project.e_commerce.entity.CartItem;
+import com.uni_project.e_commerce.entity.Product;
 import com.uni_project.e_commerce.repo.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.uni_project.e_commerce.dto.CartItemDTO;
+import com.uni_project.e_commerce.repo.ProductRepository;
 
 import java.util.List;
 
@@ -13,8 +16,25 @@ public class CartService {
     @Autowired
     private CartRepository cartRepository;
 
-    public List<CartItem> getCart(String username){
-        return cartRepository.findByUsername(username);
+    @Autowired
+    private ProductRepository productRepository;
+
+    // Fetch cart with product details
+    public List<CartItemDTO> getCart(String username) {
+
+        List<CartItem> cartItems = cartRepository.findByUsername(username);
+
+        return cartItems.stream().map(item -> {
+            Product product = productRepository.findByName(item.getProductName())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            return new CartItemDTO(
+                    item.getId(),
+                    item.getProductName(),
+                    item.getQuantity(),
+                    product.getPrice(),
+                    product.getImageUrl()
+            );
+        }).toList();
     }
 
     public CartItem addCartItem(CartItem item){
