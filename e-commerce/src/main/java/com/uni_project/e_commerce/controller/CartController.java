@@ -22,7 +22,7 @@ public class CartController {
 
     // Get all cart items for logged-in user
     @GetMapping
-    public List<CartItem> getCart(@AuthenticationPrincipal OidcUser oidcUser){
+    public List<CartItem> getCart(@AuthenticationPrincipal OidcUser oidcUser) {
         String email = oidcUser.getEmail();
         String username = userService.getUsernameByEmail(email);
         return cartService.getCart(username);
@@ -31,24 +31,38 @@ public class CartController {
     // Add a cart item
     @PostMapping
     public CartItem addCartItem(@AuthenticationPrincipal OidcUser oidcUser,
-                                @RequestBody CartItem item){
+                                @RequestBody CartItem item) {
         String email = oidcUser.getEmail();
         String username = userService.getUsernameByEmail(email);
         item.setUsername(username);
         return cartService.addCartItem(item);
     }
 
-    // Remove a cart item by id
-    @DeleteMapping("/{id}")
-    public void removeCartItem(@PathVariable Long id){
-        cartService.removeCartItem(id);
+
+    @DeleteMapping("/remove/{productName}")
+    public void removeCartItem(@AuthenticationPrincipal OidcUser oidcUser,
+                               @PathVariable String productName) {
+        String email = oidcUser.getEmail();
+        String username = userService.getUsernameByEmail(email);
+        cartService.removeCartItemByUsernameAndProductName(username, productName);
     }
+
 
     // Clear all cart items for logged-in user
     @DeleteMapping("/clear")
-    public void clearCart(@AuthenticationPrincipal OidcUser oidcUser){
+    public void clearCart(@AuthenticationPrincipal OidcUser oidcUser) {
         String email = oidcUser.getEmail();
         String username = userService.getUsernameByEmail(email);
         cartService.clearCart(username);
     }
+
+    @PatchMapping("/update-quantity/{productName}")
+    public CartItem updateQuantity(@AuthenticationPrincipal OidcUser oidcUser,
+                                   @PathVariable String productName,
+                                   @RequestParam int change) {
+        String email = oidcUser.getEmail();
+        String username = userService.getUsernameByEmail(email);
+        return cartService.updateQuantity(username, productName, change);
+    }
+
 }
