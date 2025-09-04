@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import Logo from "../assets/Logo.png";
 
 const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [user, setUser] = useState(null);  // store user info
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Try fetching logged-in user
-    api.get("/api/users/me")
-      .then(res => {
-        console.log("User Info:", res.data);   // 👀 should appear now
+    api
+      .get("/api/users/me")
+      .then((res) => {
+        console.log("User Info:", res.data);
         setUser(res.data);
         setIsAuthenticated(true);
 
         // Check registration
         return api.get("/api/users/is-registered");
       })
-      .then(res => setIsRegistered(res.data))
-      .catch(err => {
+      .then((res) => setIsRegistered(res.data))
+      .catch((err) => {
         console.error("Not logged in:", err);
         setIsAuthenticated(false);
         setIsRegistered(false);
@@ -42,18 +44,21 @@ const Navbar = () => {
 
   return (
     <nav className="p-4 bg-gray-800 text-white flex justify-between items-center">
-      <h1
-        className="text-xl font-bold cursor-pointer"
+      <img
+        src={Logo}
+        alt="E-Commerce Logo"
+        className="h-20 cursor-pointer"
         onClick={() => navigate("/")}
-      >
-        E-Commerce
-      </h1>
+      />
 
       <div className="space-x-3">
         {isAuthenticated && isRegistered && (
           <>
             <span className="mr-3">👋 {user?.name}</span> {/* show user name */}
-            <button onClick={() => navigate("/cart")} className="btn btn-primary">
+            <button
+              onClick={() => navigate("/cart")}
+              className="btn btn-primary"
+            >
               Cart
             </button>
             <button onClick={handleLogout} className="btn btn-danger">

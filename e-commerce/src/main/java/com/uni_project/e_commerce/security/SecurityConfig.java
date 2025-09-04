@@ -5,11 +5,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,25 +17,38 @@ public class SecurityConfig {
 
     private final String issuer = "https://dev-ui7u7m1xfvzd5v88.us.auth0.com/";
     private final String clientId = "YoTDUiusqzDreSDNHhrekuHFAPaDfVHf";
+    private final String frontendUrl = "http://localhost:5173"; // Your frontend URL
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Enable CORS + disable CSRF (ok for SPA + API setup)
+                // Enable CORS + disable CSRF
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
 
+                // Authorize requests
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
-                // Server-side login with Auth0
-                .oauth2Login(Customizer.withDefaults())
+                // OAuth2 login
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl(frontendUrl, true) // Redirect after login
+                )
 
-                // Logout handler
+                // Logout configuration
                 .logout(logout -> logout
-                        .addLogoutHandler(logoutHandler())
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            try {
+                                response.sendRedirect(
+                                        issuer + "v2/logout?client_id=" + clientId + "&returnTo=" + frontendUrl
+                                );
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
                 );
 
         return http.build();
@@ -46,29 +57,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        // IMPORTANT: use allowedOriginPatterns for flexibility
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // use setAllowedOrigins
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH","OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // must be true for cookies
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-    private LogoutHandler logoutHandler() {
-        return (request, response, authentication) -> {
-            try {
-                String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .build().toUriString();
-                response.sendRedirect(
-                        issuer + "v2/logout?client_id=" + clientId + "&returnTo=" + baseUrl
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        };
-    }
 }
