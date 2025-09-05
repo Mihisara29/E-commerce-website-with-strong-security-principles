@@ -22,4 +22,12 @@ public class PurchaseService {
     public Purchase addPurchase(Purchase purchase) {
         return purchaseRepository.save(purchase);
     }
+
+    public void deletePurchase(Long id) {
+        if (!purchaseRepository.existsById(id)) {
+            throw new RuntimeException("Order not found with id: " + id);
+        }
+        purchaseRepository.deleteById(id);
+    }
+
 }

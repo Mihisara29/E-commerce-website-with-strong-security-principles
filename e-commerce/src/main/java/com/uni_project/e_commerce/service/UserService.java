@@ -35,6 +35,10 @@ public class UserService {
                         .body((UserResponseDTO) Map.of("message", "User not registered")));
     }
 
+    public boolean isLoggedIn(OidcUser oidcUser) {
+        return oidcUser != null;
+    }
+
     // Register new user
     public ResponseEntity<?> registerUser(OidcUser oidcUser, UserRequestDTO userRequest) {
         String email = oidcUser.getEmail().toLowerCase();

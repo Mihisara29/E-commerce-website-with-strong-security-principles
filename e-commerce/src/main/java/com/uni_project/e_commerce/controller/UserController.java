@@ -30,6 +30,12 @@ public class UserController {
         return userService.registerUser(oidcUser, userRequest);
     }
 
+    @GetMapping("/is-logged-in")
+    public ResponseEntity<Boolean> isLoggedIn(@AuthenticationPrincipal OidcUser oidcUser) {
+        boolean loggedIn = userService.isLoggedIn(oidcUser);
+        return ResponseEntity.ok(loggedIn);
+    }
+
     @GetMapping("/is-registered")
     public ResponseEntity<Boolean> isRegistered(@AuthenticationPrincipal OidcUser oidcUser) {
         boolean registered = userService.isUserRegistered(oidcUser);

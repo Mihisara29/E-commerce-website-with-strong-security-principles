@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { useCartStore } from "../store/cartStore";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const { cart, fetchCart, removeFromCart, updateQuantity } = useCartStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCart();
@@ -69,13 +71,7 @@ const CartPage = () => {
                         >
                           <i className="fas fa-trash"></i>
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                          title="Move to wishlist"
-                        >
-                          <i className="fas fa-heart"></i>
-                        </button>
+                       
                       </div>
 
                       {/* Quantity + Price */}
@@ -142,7 +138,9 @@ const CartPage = () => {
                   </li>
                 </ul>
 
-                <button className="btn btn-primary btn-lg w-100 mt-3">
+                <button className="btn btn-primary btn-lg w-100 mt-3"
+                onClick={() => navigate("/purchase")}
+                >
                   Go to checkout
                 </button>
               </div>
