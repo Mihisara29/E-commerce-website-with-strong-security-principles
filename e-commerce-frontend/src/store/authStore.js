@@ -49,6 +49,6 @@ export const useUserStore = create((set) => ({
   },
 
   logout: () => {
-    window.location.href = "http://localhost:8080/logout";
+    window.location.href = "https://localhost:8443/logout";
   },
 }));

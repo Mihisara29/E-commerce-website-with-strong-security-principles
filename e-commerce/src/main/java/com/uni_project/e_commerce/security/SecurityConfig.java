@@ -1,5 +1,6 @@
 package com.uni_project.e_commerce.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -13,11 +14,16 @@ import java.io.IOException;
 import java.util.List;
 
 @Configuration
+
 public class SecurityConfig {
 
-    private final String issuer = "https://dev-ui7u7m1xfvzd5v88.us.auth0.com/";
-    private final String clientId = "YoTDUiusqzDreSDNHhrekuHFAPaDfVHf";
-    private final String frontendUrl = "http://localhost:5173"; // Your frontend URL
+    @Value("${spring.security.oauth2.client.provider.auth0.issuer-uri}")
+    private String issuer;
+
+    @Value("${spring.security.oauth2.client.registration.auth0.client-id}")
+    private String clientId;
+    private final String frontendUrl = "https://localhost:5173"; // updated to https
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,7 +63,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // use setAllowedOrigins
+        configuration.setAllowedOrigins(List.of("https://localhost:5173")); // use setAllowedOrigins
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH","OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

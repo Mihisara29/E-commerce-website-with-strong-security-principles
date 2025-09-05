@@ -39,7 +39,7 @@ const Navbar = () => {
   };
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/auth0";
+    window.location.href = "https://localhost:8443/oauth2/authorization/auth0";
   };
 
   const handleRegister = () => navigate("/register");
