@@ -17,7 +17,7 @@ Key features implemented for the assessment:
 * User authentication & logout with **OIDC** (Auth0).
 * Display of authenticated user profile (username, name, email, contact, country).
 * Create/view/manage product purchase orders (users can manage only their own orders).
-* Input validation for purchases: date , time (10 AM/11 AM/12 PM), district, product list, quantity, message.
+* Input validation for purchases: date , time (10 AM/11 AM/12 PM),location, product list, quantity, message.
 * HTTPS enabled (local keystore).
 * OWASP Top 10 mitigations applied (see Security section).
 * Configurable via environment variables (`.env.example` included).
